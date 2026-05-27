@@ -11,7 +11,7 @@ function calcGrade(n) {
 export async function onRequestGet({ env, params }) {
   try {
     const db = getDb(env)
-    const result = await db.execute(
+    const rows = await db.execute(
       `SELECT n.*, m.nama as mahasiswa_nama, mk.nama as matkul_nama
        FROM nilai n
        JOIN mahasiswa m ON n.mahasiswa_id = m.id
@@ -19,8 +19,8 @@ export async function onRequestGet({ env, params }) {
        WHERE n.id = ?`,
       [params.id]
     )
-    if (!result.rows.length) return Response.json({ error: 'Tidak ditemukan' }, { status: 404 })
-    return Response.json(result.rows[0])
+    if (!rows.length) return Response.json({ error: 'Tidak ditemukan' }, { status: 404 })
+    return Response.json(rows[0])
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 })
   }

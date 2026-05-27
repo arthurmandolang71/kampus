@@ -3,9 +3,9 @@ import { getDb } from '../_db.js'
 export async function onRequestGet({ env, params }) {
   try {
     const db = getDb(env)
-    const result = await db.execute('SELECT * FROM dosen WHERE id = ?', [params.id])
-    if (!result.rows.length) return Response.json({ error: 'Tidak ditemukan' }, { status: 404 })
-    return Response.json(result.rows[0])
+    const rows = await db.execute('SELECT * FROM dosen WHERE id = ?', [params.id])
+    if (!rows.length) return Response.json({ error: 'Tidak ditemukan' }, { status: 404 })
+    return Response.json(rows[0])
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 })
   }

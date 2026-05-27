@@ -31,8 +31,8 @@ export async function onRequestGet({ request, env }) {
     sql += ' ORDER BY n.created_at DESC'
 
     const db = getDb(env)
-    const result = await db.execute(sql, params)
-    return Response.json(result.rows)
+    const rows = await db.execute(sql, params)
+    return Response.json(rows)
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 })
   }
@@ -46,11 +46,12 @@ export async function onRequestPost({ request, env }) {
     }
     const grade = calcGrade(Number(nilai_angka))
     const db = getDb(env)
-    const result = await db.execute(
+    await db.execute(
       'INSERT INTO nilai (mahasiswa_id, mata_kuliah_id, nilai_angka, grade, tahun_akademik) VALUES (?, ?, ?, ?, ?)',
       [mahasiswa_id, mata_kuliah_id, nilai_angka, grade, tahun_akademik ?? null]
     )
-    return Response.json({ id: Number(result.lastInsertId) }, { status: 201 })
+    const idRows = await db.execute('SELECT LAST_INSERT_ID() as id')
+    return Response.json({ id: Number(idRows[0].id) }, { status: 201 })
   } catch (e) {
     if (e.message?.includes('Duplicate')) {
       return Response.json({ error: 'Nilai untuk mahasiswa dan mata kuliah ini sudah ada' }, { status: 409 })

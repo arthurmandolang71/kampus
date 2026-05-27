@@ -13,12 +13,12 @@ export async function onRequestGet({ env }) {
 
     return Response.json({
       stats: {
-        total_mahasiswa: Number(mhs.rows[0]?.total ?? 0),
-        total_dosen: Number(dsn.rows[0]?.total ?? 0),
-        total_matkul: Number(mk.rows[0]?.total ?? 0),
-        rata_nilai: nil.rows[0]?.avg ?? null,
+        total_mahasiswa: Number(mhs[0]?.total ?? 0),
+        total_dosen: Number(dsn[0]?.total ?? 0),
+        total_matkul: Number(mk[0]?.total ?? 0),
+        rata_nilai: nil[0]?.avg ?? null,
       },
-      recent: recent.rows,
+      recent,
     })
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 })

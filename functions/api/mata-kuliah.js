@@ -3,13 +3,13 @@ import { getDb } from './_db.js'
 export async function onRequestGet({ env }) {
   try {
     const db = getDb(env)
-    const result = await db.execute(
+    const rows = await db.execute(
       `SELECT mk.*, d.nama as dosen_nama
        FROM mata_kuliah mk
        LEFT JOIN dosen d ON mk.dosen_id = d.id
        ORDER BY mk.id DESC`
     )
-    return Response.json(result.rows)
+    return Response.json(rows)
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 })
   }
@@ -22,11 +22,12 @@ export async function onRequestPost({ request, env }) {
       return Response.json({ error: 'kode dan nama wajib diisi' }, { status: 400 })
     }
     const db = getDb(env)
-    const result = await db.execute(
+    await db.execute(
       'INSERT INTO mata_kuliah (kode, nama, sks, semester, dosen_id) VALUES (?, ?, ?, ?, ?)',
       [kode, nama, sks ?? null, semester ?? null, dosen_id ?? null]
     )
-    return Response.json({ id: Number(result.lastInsertId) }, { status: 201 })
+    const idRows = await db.execute('SELECT LAST_INSERT_ID() as id')
+    return Response.json({ id: Number(idRows[0].id) }, { status: 201 })
   } catch (e) {
     if (e.message?.includes('Duplicate')) {
       return Response.json({ error: 'Kode mata kuliah sudah terdaftar' }, { status: 409 })
