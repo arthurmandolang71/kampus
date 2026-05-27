@@ -1,5 +1,9 @@
 import { getDb } from './_db.js'
 
+function isProduction(env) {
+  return env?.ENVIRONMENT === 'production' || env?.NODE_ENV === 'production'
+}
+
 export async function onRequestGet({ env }) {
   const vars = {
     TIDB_HOST: !!env.TIDB_HOST,
@@ -25,11 +29,12 @@ export async function onRequestGet({ env }) {
     await db.execute('SELECT 1')
     return Response.json({ ok: true, db: 'connected', vars })
   } catch (e) {
+    const prod = isProduction(env)
     return Response.json({
       ok: false,
-      error: e.message,
+      error: prod ? 'Database tidak dapat diakses' : e.message,
       vars,
-      hint: e.message.includes('Access denied')
+      hint: !prod && e.message?.includes('Access denied')
         ? 'Password salah atau IP Cloudflare Worker diblokir di TiDB IP Allowlist. Cek Settings → Security di TiDB Cloud Console dan set ke Allow All (0.0.0.0/0).'
         : null,
     }, { status: 503 })

@@ -1,4 +1,5 @@
 import { getDb } from './_db.js'
+import { errorResponse } from './_helpers.js'
 
 export async function onRequestGet({ env }) {
   try {
@@ -21,6 +22,6 @@ export async function onRequestGet({ env }) {
       recent,
     })
   } catch (e) {
-    return Response.json({ error: e.message }, { status: 500 })
+    return errorResponse(e, env)
   }
 }

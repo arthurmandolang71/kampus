@@ -1,19 +1,59 @@
-function sanitize(value) {
-  if (value === null || value === undefined) return 'NULL'
-  if (typeof value === 'number') return String(value)
-  if (typeof value === 'boolean') return value ? '1' : '0'
+// TiDB Cloud HTTP API tidak mendukung prepared statements (placeholder `?`)
+// secara native — request body hanya menerima { query }. Karena itu, kita
+// melakukan binding manual dengan validasi ketat di sisi client agar tidak
+// rentan SQL injection.
+
+const MAX_STRING_LENGTH = 65535
+
+function sanitizeString(value) {
   const str = String(value)
+  if (str.length > MAX_STRING_LENGTH) {
+    throw new Error('Parameter string melebihi batas panjang')
+  }
+  // Escape sesuai aturan MySQL string literal.
+  // Catatan: kita tidak mendukung sql_mode NO_BACKSLASH_ESCAPES; TiDB Cloud
+  // default tidak mengaktifkan mode tersebut.
+  const escaped = str
     .replace(/\\/g, '\\\\')
     .replace(/\0/g, '\\0')
-    .replace(/'/g, "\\'")
+    .replace(/\x1a/g, '\\Z')
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
-    .replace(/\t/g, '\\t')
-  return `'${str}'`
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+  return `'${escaped}'`
+}
+
+function sanitize(value) {
+  if (value === null || value === undefined) return 'NULL'
+  if (typeof value === 'boolean') return value ? '1' : '0'
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) {
+      throw new Error('Parameter number harus finite (bukan NaN/Infinity)')
+    }
+    return String(value)
+  }
+  if (typeof value === 'bigint') return value.toString()
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) {
+      throw new Error('Parameter Date tidak valid')
+    }
+    return sanitizeString(value.toISOString().slice(0, 19).replace('T', ' '))
+  }
+  if (typeof value === 'string') return sanitizeString(value)
+  // Tolak tipe lain (object, array, function) untuk menghindari binding
+  // yang tidak terduga.
+  throw new Error(`Tipe parameter tidak didukung: ${typeof value}`)
 }
 
 function formatSql(sql, params) {
-  if (!params || params.length === 0) return sql
+  const expected = (sql.match(/\?/g) || []).length
+  if (expected !== params.length) {
+    throw new Error(
+      `Jumlah parameter tidak cocok: SQL butuh ${expected}, diberikan ${params.length}`
+    )
+  }
+  if (expected === 0) return sql
   let i = 0
   return sql.replace(/\?/g, () => sanitize(params[i++]))
 }
