@@ -1,0 +1,44 @@
+-- Jalankan sekali di TiDB Cloud Console atau via MCP sebelum deploy
+
+CREATE TABLE IF NOT EXISTS mahasiswa (
+  id          INT PRIMARY KEY AUTO_INCREMENT,
+  nim         VARCHAR(20)  UNIQUE NOT NULL,
+  nama        VARCHAR(100) NOT NULL,
+  email       VARCHAR(100),
+  jurusan     VARCHAR(100),
+  angkatan    YEAR,
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS dosen (
+  id              INT PRIMARY KEY AUTO_INCREMENT,
+  nip             VARCHAR(20)  UNIQUE NOT NULL,
+  nama            VARCHAR(100) NOT NULL,
+  email           VARCHAR(100),
+  bidang_keahlian VARCHAR(100),
+  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS mata_kuliah (
+  id         INT PRIMARY KEY AUTO_INCREMENT,
+  kode       VARCHAR(20)  UNIQUE NOT NULL,
+  nama       VARCHAR(100) NOT NULL,
+  sks        TINYINT,
+  semester   TINYINT,
+  dosen_id   INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (dosen_id) REFERENCES dosen(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS nilai (
+  id             INT PRIMARY KEY AUTO_INCREMENT,
+  mahasiswa_id   INT NOT NULL,
+  mata_kuliah_id INT NOT NULL,
+  nilai_angka    DECIMAL(5,2),
+  grade          VARCHAR(2),
+  tahun_akademik VARCHAR(20),
+  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_nilai (mahasiswa_id, mata_kuliah_id, tahun_akademik),
+  FOREIGN KEY (mahasiswa_id)   REFERENCES mahasiswa(id)   ON DELETE CASCADE,
+  FOREIGN KEY (mata_kuliah_id) REFERENCES mata_kuliah(id) ON DELETE CASCADE
+);

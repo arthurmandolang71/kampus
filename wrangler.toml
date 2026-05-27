@@ -1,0 +1,8 @@
+name = "kampus"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
+
+[vars]
+TIDB_HOST     = "gateway01.ap-southeast-1.prod.aws.tidbcloud.com"
+TIDB_USERNAME = "3aVUiXqotVQQEkW.root"
+TIDB_DATABASE = "mahasiswa"

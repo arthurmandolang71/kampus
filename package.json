@@ -1,0 +1,25 @@
+{
+  "name": "kampus",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:full": "wrangler pages dev --compatibility-date=2024-09-23 --proxy 5173 -- npx vite --port 5173",
+    "build": "vite build",
+    "preview": "wrangler pages dev dist"
+  },
+  "dependencies": {
+    "@tidbcloud/serverless": "^0.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "vite": "^5.4.8",
+    "wrangler": "^3.78.0"
+  }
+}
