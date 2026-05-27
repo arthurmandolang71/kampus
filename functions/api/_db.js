@@ -51,6 +51,11 @@ async function tidbExecute(env, sql) {
 }
 
 export function getDb(env) {
+  const missing = ['TIDB_HOST', 'TIDB_USERNAME', 'TIDB_PASSWORD', 'TIDB_DATABASE']
+    .filter(k => !env[k])
+  if (missing.length > 0) {
+    throw new Error(`Environment variable tidak dikonfigurasi: ${missing.join(', ')}`)
+  }
   return {
     async execute(sql, params) {
       const formatted = formatSql(sql, params ?? [])

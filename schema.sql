@@ -1,4 +1,5 @@
 -- Jalankan sekali di TiDB Cloud Console atau via MCP sebelum deploy
+-- Migration: tambah tabel kesan_pesan (2026-05-27)
 
 CREATE TABLE IF NOT EXISTS mahasiswa (
   id          INT PRIMARY KEY AUTO_INCREMENT,
@@ -41,4 +42,14 @@ CREATE TABLE IF NOT EXISTS nilai (
   UNIQUE KEY uq_nilai (mahasiswa_id, mata_kuliah_id, tahun_akademik),
   FOREIGN KEY (mahasiswa_id)   REFERENCES mahasiswa(id)   ON DELETE CASCADE,
   FOREIGN KEY (mata_kuliah_id) REFERENCES mata_kuliah(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS kesan_pesan (
+  id           INT PRIMARY KEY AUTO_INCREMENT,
+  mahasiswa_id INT NOT NULL,
+  kesan        TEXT NOT NULL,
+  pesan        TEXT NOT NULL,
+  kategori     VARCHAR(50) DEFAULT 'Umum',
+  created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (mahasiswa_id) REFERENCES mahasiswa(id) ON DELETE CASCADE
 );

@@ -6,6 +6,7 @@ const navItems = [
   { to: '/dosen', label: 'Dosen' },
   { to: '/mata-kuliah', label: 'Mata Kuliah' },
   { to: '/nilai', label: 'Nilai' },
+  { to: '/kesan-pesan', label: 'Kesan & Pesan' },
 ]
 
 export default function Layout() {

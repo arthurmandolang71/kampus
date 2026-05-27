@@ -5,6 +5,7 @@ import Mahasiswa from './pages/Mahasiswa.jsx'
 import Dosen from './pages/Dosen.jsx'
 import MataKuliah from './pages/MataKuliah.jsx'
 import Nilai from './pages/Nilai.jsx'
+import KesanPesan from './pages/KesanPesan.jsx'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="dosen" element={<Dosen />} />
         <Route path="mata-kuliah" element={<MataKuliah />} />
         <Route path="nilai" element={<Nilai />} />
+        <Route path="kesan-pesan" element={<KesanPesan />} />
       </Route>
     </Routes>
   )
