@@ -6,6 +6,7 @@ import Dosen from './pages/Dosen.jsx'
 import MataKuliah from './pages/MataKuliah.jsx'
 import Nilai from './pages/Nilai.jsx'
 import KesanPesan from './pages/KesanPesan.jsx'
+import SaranaPrasarana from './pages/SaranaPrasarana.jsx'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="mata-kuliah" element={<MataKuliah />} />
         <Route path="nilai" element={<Nilai />} />
         <Route path="kesan-pesan" element={<KesanPesan />} />
+        <Route path="sarana-prasarana" element={<SaranaPrasarana />} />
       </Route>
     </Routes>
   )

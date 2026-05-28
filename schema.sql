@@ -53,3 +53,12 @@ CREATE TABLE IF NOT EXISTS kesan_pesan (
   created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (mahasiswa_id) REFERENCES mahasiswa(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS sarana_prasarana (
+  id         INT PRIMARY KEY AUTO_INCREMENT,
+  nama       VARCHAR(150) NOT NULL,
+  jenis      VARCHAR(50),
+  kondisi    VARCHAR(50),
+  jumlah     INT DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

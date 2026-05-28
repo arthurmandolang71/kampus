@@ -1,5 +1,7 @@
 node_modules/
 dist/
 .dev.vars
+.dev.vars.prod
+.dev.vars.dev
 .env
 .wrangler/
